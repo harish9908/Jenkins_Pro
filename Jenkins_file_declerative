@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+    environment {
+        PATH = "/opt/maven/bin:$PATH"
+    }
+    stages {
+        stage ('git clone') {
+            steps {
+                git credentialsId: 'eceb40a8-c0c9-4f95-a26e-56274889cc04', url: 'https://github.com/harish9908/Maven_web_pro.git'
+            }
+        }
+        stage ('maven goals') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage ('depoloy code') {
+            steps {
+                deploy adapters: [tomcat9(credentialsId: '8b4ce839-3cd4-4c6c-a31b-c579f135a757', path: '', url: 'http://192.168.48.128:8081/')], contextPath: 'declerative_demo3', war: '**/*.war'
+            }
+        }
+    }
+}
